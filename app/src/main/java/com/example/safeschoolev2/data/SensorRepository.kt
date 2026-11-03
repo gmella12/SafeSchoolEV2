@@ -67,6 +67,16 @@ class SensorRepository(
             }.reversed()
         }
 
+    /** Umbrales configurados por el administrador, en tiempo real. */
+    fun observarUmbrales(): Flow<Umbrales> = observar(umbralesRef) { snap ->
+        snap.getValue(Umbrales::class.java) ?: Umbrales()
+    }
+
+    /** true mientras el teléfono está conectado con Firebase (nodo especial .info/connected). */
+    fun observarConexion(): Flow<Boolean> = observar(db.getReference(".info/connected")) { snap ->
+        snap.getValue(Boolean::class.java) ?: false
+    }
+
     // ---------- Escritura de lecturas (nodo sensor) ----------
 
     /**

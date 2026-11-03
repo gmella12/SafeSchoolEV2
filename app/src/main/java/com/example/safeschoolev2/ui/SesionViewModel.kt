@@ -23,6 +23,9 @@ class SesionViewModel(
     private val _estado = MutableStateFlow<EstadoSesion>(EstadoSesion.Cargando)
     val estado: StateFlow<EstadoSesion> = _estado.asStateFlow()
 
+    private val _mensaje = MutableStateFlow<String?>(null)
+    val mensaje: StateFlow<String?> = _mensaje.asStateFlow()
+
     init {
         viewModelScope.launch {
             val usuario = repo.usuarioConSesion()
@@ -41,6 +44,16 @@ class SesionViewModel(
 
     fun cerrarSesion() {
         repo.cerrarSesion()
+        _mensaje.value = null
         _estado.value = EstadoSesion.SinSesion
+    }
+
+    /** Envía el correo de Firebase para cambiar la contraseña. */
+    fun cambiarClave(correo: String) {
+        viewModelScope.launch {
+            val r = runCatching { repo.recuperarClave(correo) }
+            _mensaje.value = if (r.isSuccess) "Te enviamos un correo a $correo para cambiar tu contraseña"
+            else "No se pudo enviar el correo. Revisa tu conexión."
+        }
     }
 }

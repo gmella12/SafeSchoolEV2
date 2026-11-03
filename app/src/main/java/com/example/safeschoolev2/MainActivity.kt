@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.safeschoolev2.ui.EstadoSesion
 import com.example.safeschoolev2.ui.SesionViewModel
 import com.example.safeschoolev2.ui.login.LoginScreen
-import com.example.safeschoolev2.ui.prueba.PruebaDatosScreen
+import com.example.safeschoolev2.ui.principal.PantallaPrincipal
 import com.example.safeschoolev2.ui.theme.SafeSchoolEV2Theme
 
 class MainActivity : ComponentActivity() {
@@ -39,9 +39,6 @@ fun AppRaiz(sesion: SesionViewModel = viewModel()) {
             CircularProgressIndicator()
         }
         EstadoSesion.SinSesion -> LoginScreen(onLoginExitoso = sesion::sesionIniciada)
-        is EstadoSesion.Activa -> PruebaDatosScreen(
-            usuario = e.usuario,
-            onCerrarSesion = sesion::cerrarSesion
-        )
+        is EstadoSesion.Activa -> PantallaPrincipal(usuario = e.usuario, sesion = sesion)
     }
 }
